@@ -408,6 +408,7 @@ textarea{min-height:92px;resize:vertical}
       <div class="sec-h"><h2>Novedades</h2></div>
       <div class="card log" id="changelog">
         <ul>
+          <li><b>8 oct 2026 · v14</b> Una sola fila por día en la hoja, siempre: si el día ya existe se modifica, nunca se crea otra; y si hubiera repetidas, se juntan solas. La app te avisa cuando vas a modificar un día ya apuntado.</li>
           <li><b>8 oct 2026 · v13</b> El deporte ya no se pregunta: la app lo deduce de tus entrenos y lo escribe sola en la hoja (Gimnasio, Running, Gimnasio + Running, Descanso, Saltado o No realizado). Nuevo botón «Entreno saltado / no realizado».</li>
           <li><b>8 oct 2026 · v12</b> La dieta también se guarda en tu hoja, en la pestaña «Dieta»: una fila por día con cada comida (Bien / No) y las kcal y proteína del menú. Si no hay conexión, se sube sola después.</li>
           <li><b>8 oct 2026 · v11</b> App instalable: se añade a la pantalla de inicio con su icono, se abre a pantalla completa y se conecta directamente a tu hoja de Google con tu propio script. Las tareas y la dieta se guardan en el móvil.</li>
@@ -464,6 +465,7 @@ textarea{min-height:92px;resize:vertical}
     <div class="pane" data-pane="sueno" hidden>
       <div class="stepper"><button class="stp" type="button" data-for="suenoIn" data-step="-0.5" aria-label="Restar media hora">−</button><div class="sv"><input id="suenoIn" type="number" inputmode="decimal" step="0.5" min="0" max="14" aria-label="Horas de sueño"><span>h</span></div><button class="stp" type="button" data-for="suenoIn" data-step="0.5" aria-label="Sumar media hora">+</button></div>
       <div class="seg" id="suenoQuick"><button type="button" data-h="6">6 h</button><button type="button" data-h="7">7 h</button><button type="button" data-h="8">8 h</button><button type="button" data-h="9">9 h</button></div>
+      <p class="hint" id="suenoHint" hidden></p>
       <button class="btn" id="saveSueno" type="button">Guardar sueño</button>
       <div class="msg" id="mSueno" hidden></div>
     </div>
@@ -471,6 +473,7 @@ textarea{min-height:92px;resize:vertical}
     <div class="pane" data-pane="habitos" hidden>
       <div class="fld"><span class="fl">Tabaco</span><div class="seg" data-group="fumado"><button type="button" data-v="No">No he fumado</button><button type="button" data-v="Sí">He fumado</button></div></div>
       <div class="fld"><span class="fl">Alcohol</span><div class="seg" data-group="alcohol"><button type="button" data-v="No">Nada</button><button type="button" data-v="Sí, poco (1-2)">Poco</button><button type="button" data-v="Sí, bastante (3+)">Bastante</button></div></div>
+      <p class="hint" id="habHint" hidden></p>
       <button class="btn" id="saveHab" type="button">Guardar</button>
       <div class="msg" id="mHab" hidden></div>
     </div>
@@ -942,8 +945,9 @@ function prefill(p){
     $("pesoHint").textContent=r.peso!=null?"Ya apuntado para "+niceDate(f)+". Si lo cambias, se actualiza.":prev?"Último: "+fmt(prev.peso)+" kg ("+niceDate(prev.fecha)+")":"En ayunas, después del baño.";
     $("savePeso").textContent=r.peso!=null?"Actualizar peso":"Guardar peso";
   }
-  if(p==="sueno"){$("suenoIn").value=r.sueno!=null?r.sueno:7;syncQuick();$("saveSueno").textContent=r.sueno!=null?"Actualizar sueño":"Guardar sueño"}
-  if(p==="habitos"){pick("fumado",r.fumado);pick("alcohol",r.alcohol)}
+  if(p==="sueno"){$("suenoHint").hidden=r.sueno==null;$("suenoHint").textContent="Ya apuntado para "+niceDate(f)+". Si lo cambias, se modifica ese mismo día.";$("suenoIn").value=r.sueno!=null?r.sueno:7;syncQuick();$("saveSueno").textContent=r.sueno!=null?"Actualizar sueño":"Guardar sueño"}
+  if(p==="habitos"){pick("fumado",r.fumado);pick("alcohol",r.alcohol);const ya=!!(r.fumado||r.alcohol);
+    $("habHint").hidden=!ya;$("habHint").textContent="Ya apuntado para "+niceDate(f)+". Si cambias algo, se modifica ese mismo día (no se crea otro).";$("saveHab").textContent=ya?"Actualizar hábitos":"Guardar"}
   if(p==="comida"){if(!sel.comida)pick("comida",defMeal());renderDieta()}
   if(p==="entreno"){if(!$("eFecha").value)$("eFecha").value=todayIso();buildSessions()}
 }
@@ -957,7 +961,7 @@ async function saveDiario(patch,summary,msgEl,btn){
   saving=true;const f=sheetDate();if(btn)btn.disabled=true;
   try{const res=await upsertDiario(f,patch);
     await loadAll();closeSheet();
-    toast((res.mode==="update"?"Actualizado":"Guardado")+" · "+summary+(f!==todayIso()?" ("+niceDate(f)+")":"")+streakNote(patch)+(res.dup?" · Hay líneas repetidas de este día en la hoja.":""));
+    toast((res.mode==="update"?"Actualizado":"Guardado")+" · "+summary+(f!==todayIso()?" ("+niceDate(f)+")":"")+streakNote(patch)+(res.dup?" · Había filas repetidas de este día y las he juntado en una":""));
   }catch(e){showMsg(msgEl,errText(e)+" Comprueba la hoja antes de volver a guardar.")}
   finally{saving=false;if(btn)btn.disabled=false}
 }

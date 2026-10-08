@@ -1,5 +1,5 @@
 // Seguimiento diario · guarda la app en el móvil para que abra rápido y sin conexión.
-const CACHE = "seguimiento-v13";
+const CACHE = "seguimiento-v14";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
