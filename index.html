@@ -408,6 +408,7 @@ textarea{min-height:92px;resize:vertical}
       <div class="sec-h"><h2>Novedades</h2></div>
       <div class="card log" id="changelog">
         <ul>
+          <li><b>8 oct 2026 · v13</b> El deporte ya no se pregunta: la app lo deduce de tus entrenos y lo escribe sola en la hoja (Gimnasio, Running, Gimnasio + Running, Descanso, Saltado o No realizado). Nuevo botón «Entreno saltado / no realizado».</li>
           <li><b>8 oct 2026 · v12</b> La dieta también se guarda en tu hoja, en la pestaña «Dieta»: una fila por día con cada comida (Bien / No) y las kcal y proteína del menú. Si no hay conexión, se sube sola después.</li>
           <li><b>8 oct 2026 · v11</b> App instalable: se añade a la pantalla de inicio con su icono, se abre a pantalla completa y se conecta directamente a tu hoja de Google con tu propio script. Las tareas y la dieta se guardan en el móvil.</li>
           <li><b>8 oct 2026 · v10</b> Nueva rutina inspirada en tu preparador (Torso A, Pierna A, Torso B, Pierna B) y running para bajar de 50 min en 10 km. Entreno serie a serie: eliges peso y repeticiones de cada serie, ves lo que hiciste la última vez y el historial, y te avisa de los récords. Dieta con menú fijo: marcas cada comida como bien o no, y el Hoy suma calorías y proteína solo.</li>
@@ -470,7 +471,6 @@ textarea{min-height:92px;resize:vertical}
     <div class="pane" data-pane="habitos" hidden>
       <div class="fld"><span class="fl">Tabaco</span><div class="seg" data-group="fumado"><button type="button" data-v="No">No he fumado</button><button type="button" data-v="Sí">He fumado</button></div></div>
       <div class="fld"><span class="fl">Alcohol</span><div class="seg" data-group="alcohol"><button type="button" data-v="No">Nada</button><button type="button" data-v="Sí, poco (1-2)">Poco</button><button type="button" data-v="Sí, bastante (3+)">Bastante</button></div></div>
-      <div class="fld"><span class="fl">Deporte</span><div class="seg" data-group="deporte"><button type="button" data-v="No">No</button><button type="button" data-v="Gimnasio">Gym</button><button type="button" data-v="Running">Correr</button><button type="button" data-v="Otro deporte">Otro</button></div></div>
       <button class="btn" id="saveHab" type="button">Guardar</button>
       <div class="msg" id="mHab" hidden></div>
     </div>
@@ -514,6 +514,11 @@ textarea{min-height:92px;resize:vertical}
       <div class="card" id="eList"></div>
       <div class="fld"><label for="eNotas">Notas (opcional)</label><input id="eNotas" type="text" placeholder="Ej. buenas sensaciones"></div>
       <button class="btn" id="saveEntreno" type="button">Guardar entreno</button>
+      <button class="btn sec" id="skipEntreno" type="button">Entreno saltado / no realizado</button>
+      <div class="card fld" id="skipBox" hidden>
+        <span id="skipTxt"></span>
+        <div class="r2"><button class="btn sec" id="skipNo" type="button">Cancelar</button><button class="btn" id="skipYes" type="button" style="background:var(--bad);color:#fff">Sí, saltado</button></div>
+      </div>
       <div class="msg" id="mEntreno" hidden></div>
     </div>
   </div>
@@ -604,6 +609,7 @@ async function loadAll(){
     S.plan=plan.filter(r=>r[0]&&DAYS.includes(r[0])).map(r=>({dia:r[0],sesion:r[1]||"",ej:r[2]||"",series:r[3]||"",reps:r[4]||"",descanso:r[5]||"",notas:r[6]||""}));
     S.loaded=true;
     if(d.dieta)sincronizarDieta(d.dieta);
+    setTimeout(syncDeporte,0);
     setStatus("Al día · "+new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"}),"ok");
     $("banner").hidden=true;
     renderAll();
@@ -615,12 +621,39 @@ async function loadAll(){
 
 /* ---------- cálculos ---------- */
 const diaBy=()=>Object.fromEntries(S.diario.map(r=>[r.fecha,r]));
+const SKIP="Sesión saltada";
+const isRunS=x=>/run|carrera|rodaje|correr/i.test(x||"");
+const realEx=e=>e.ej!==SKIP;
+const depDone=v=>String(v||"").split(" (")[0]; // "Gimnasio + Running (running saltado)" -> "Gimnasio + Running"
 function gymDays(){const s=new Set();
-  S.entrenos.forEach(e=>{if(/torso|pierna|gim|full|fuerza/i.test(e.sesion)&&isIso(e.fecha))s.add(e.fecha)});
-  S.diario.forEach(r=>{if(r.deporte==="Gimnasio"&&isIso(r.fecha))s.add(r.fecha)});return s}
+  S.entrenos.forEach(e=>{if(realEx(e)&&!isRunS(e.sesion)&&!/descanso/i.test(e.sesion)&&isIso(e.fecha))s.add(e.fecha)});
+  S.diario.forEach(r=>{if(/gimnasio/i.test(depDone(r.deporte))&&isIso(r.fecha))s.add(r.fecha)});return s}
 function runDays(){const s=new Set();
-  S.entrenos.forEach(e=>{if(/run|carrera|rodaje|correr/i.test(e.sesion)&&isIso(e.fecha))s.add(e.fecha)});
-  S.diario.forEach(r=>{if(r.deporte==="Running"&&isIso(r.fecha))s.add(r.fecha)});return s}
+  S.entrenos.forEach(e=>{if(realEx(e)&&isRunS(e.sesion)&&isIso(e.fecha))s.add(e.fecha)});
+  S.diario.forEach(r=>{if(/running/i.test(depDone(r.deporte))&&isIso(r.fecha))s.add(r.fecha)});return s}
+function plannedOn(f){return [...new Set(S.plan.filter(p=>p.dia===dayName(f)&&!/descanso/i.test(p.sesion)).map(p=>p.sesion))]}
+// Lo que se escribe en Diario › Deporte, deducido de los entrenos apuntados
+function computeDeporte(f){
+  const rows=S.entrenos.filter(e=>e.fecha===f),real=rows.filter(realEx);
+  const gym=real.some(e=>!isRunS(e.sesion)),run=real.some(e=>isRunS(e.sesion));
+  const skipped=[...new Set(rows.filter(e=>!realEx(e)).map(e=>e.sesion))].filter(x=>!real.some(e=>e.sesion===x));
+  const done=[gym&&"Gimnasio",run&&"Running"].filter(Boolean).join(" + ");
+  if(done)return skipped.length?done+" ("+[...new Set(skipped.map(x=>isRunS(x)?"running":"gimnasio"))].join(" y ")+" saltado)":done;
+  if(skipped.length)return "Saltado";
+  if(!plannedOn(f).length)return "Descanso";
+  return f<todayIso()?"No realizado":"";
+}
+const DEP_START="2026-10-08"; // a partir de aquí la app rellena el deporte sola
+let depSyncing=false;
+async function syncDeporte(){
+  if(depSyncing||!mcp||!S.plan.length)return;depSyncing=true;let changed=false;
+  try{const t=todayIso();let f=addDays(t,-7);if(f<DEP_START)f=DEP_START;
+    for(;f<=t;f=addDays(f,1)){const v=computeDeporte(f);const r=diaBy()[f];
+      if(!v||(r&&r.deporte===v))continue;
+      await upsertDiario(f,{F:v});changed=true;
+      if(r)r.deporte=v;else S.diario.push({fecha:f,sueno:null,peso:null,fumado:"",alcohol:"",deporte:v});}
+  }catch(e){}finally{depSyncing=false;if(changed)renderAll()}
+}
 function weekCount(set){const t=todayIso(),mon=mondayOf(t);return [...set].filter(f=>f>=mon&&f<=t).length}
 function mealsOn(f){return S.comidas.filter(c=>c.fecha===f)}
 /* menú fijo (recomposición ≈ 2.620 kcal · 180 g proteína) */
@@ -700,11 +733,12 @@ function renderHoy(){
   const plan=[...new Set(S.plan.filter(p=>p.dia===dayName(t)).map(p=>p.sesion))];
   const rest=!plan.length||plan.every(s=>/descanso/i.test(s));
   const exHoy=S.entrenos.filter(e=>e.fecha===t);
+  const hechas=[...new Set(exHoy.filter(realEx).map(e=>e.sesion))],saltadas=[...new Set(exHoy.filter(e=>!realEx(e)).map(e=>e.sesion))].filter(x=>!hechas.includes(x));
+  const faltan=plannedOn(t).filter(x=>!hechas.includes(x)&&!saltadas.includes(x));
   let eVal,eDone=false,eTodo=false;
-  if(exHoy.length){eVal="Hecho · "+[...new Set(exHoy.map(e=>e.sesion))].join(" + ");eDone=true}
-  else if(r.deporte&&r.deporte!=="No"){eVal="Hecho · "+r.deporte;eDone=true}
+  if(hechas.length||saltadas.length){eVal=[hechas.length?"Hecho · "+hechas.join(" + "):"",saltadas.length?"Saltado · "+saltadas.join(" + "):"",faltan.length?"falta "+faltan.join(" + "):""].filter(Boolean).join(" · ");eDone=!faltan.length}
   else if(rest){eVal="Día de descanso";eDone=true}
-  else{eVal="Toca "+plan.filter(s=>!/descanso/i.test(s)).join(" + ");eTodo=false}
+  else{eVal="Toca "+faltan.join(" + ")}
   const habVal=[r.fumado?(r.fumado==="No"?"Sin tabaco":"Tabaco"):"",r.alcohol?(r.alcohol==="No"?"sin alcohol":/poco/i.test(r.alcohol)?"alcohol: poco":"alcohol: bastante"):""].filter(Boolean).join(" · ");
   const items=[
     ["sueno","i-moon","--sleep","Sueño",r.sueno!=null?fmt(r.sueno)+" h":"Apuntar",r.sueno!=null],
@@ -756,7 +790,7 @@ function renderProgreso(){
   $("wGym").innerHTML=gym+"<small>/"+GYM_GOAL+"</small>";$("wRun").innerHTML=run+"<small>/"+RUN_GOAL+"</small>";
   $("dGym").innerHTML=Array.from({length:GYM_GOAL},(_,i)=>'<i class="'+(i<gym?"on":"")+'"></i>').join("");
   $("dRun").innerHTML=Array.from({length:RUN_GOAL},(_,i)=>'<i class="'+(i<run?"on":"")+'"></i>').join("");
-  const cls={fumado:v=>v==="No"?"g":v?"b":"",alcohol:v=>v==="No"?"g":/poco/i.test(v)?"w":v?"b":"",deporte:v=>!v?"":v==="No"?"b":"g"};
+  const cls={fumado:v=>v==="No"?"g":v?"b":"",alcohol:v=>v==="No"?"g":/poco/i.test(v)?"w":v?"b":"",deporte:v=>!v?"":/^(no|no realizado|saltado)$/i.test(v)?"b":/saltado/i.test(v)?"w":"g"};
   let h='<span></span>'+days.map(x=>'<span class="d">'+Number(x.slice(8))+'</span>').join("");
   [["Tabaco","fumado"],["Alcohol","alcohol"],["Deporte","deporte"]].forEach(([lab,k])=>{
     h+='<span class="rl2">'+lab+'</span>'+days.map(x=>{const r=by[x];const c=r?cls[k](r[k]):"";return '<span class="c '+c+'" title="'+x+(r&&r[k]?": "+esc(r[k]):"")+'"></span>'}).join("");
@@ -909,7 +943,7 @@ function prefill(p){
     $("savePeso").textContent=r.peso!=null?"Actualizar peso":"Guardar peso";
   }
   if(p==="sueno"){$("suenoIn").value=r.sueno!=null?r.sueno:7;syncQuick();$("saveSueno").textContent=r.sueno!=null?"Actualizar sueño":"Guardar sueño"}
-  if(p==="habitos"){pick("fumado",r.fumado);pick("alcohol",r.alcohol);pick("deporte",r.deporte)}
+  if(p==="habitos"){pick("fumado",r.fumado);pick("alcohol",r.alcohol)}
   if(p==="comida"){if(!sel.comida)pick("comida",defMeal());renderDieta()}
   if(p==="entreno"){if(!$("eFecha").value)$("eFecha").value=todayIso();buildSessions()}
 }
@@ -935,10 +969,10 @@ $("saveSueno").addEventListener("click",()=>{const v=num($("suenoIn").value);
   if(v==null){showMsg($("mSueno"),"Indica cuántas horas has dormido.");return}
   if(v<0||v>14){showMsg($("mSueno"),"Las horas de sueño deben estar entre 0 y 14.");return}
   saveDiario({B:v},fmt(v)+" h de sueño",$("mSueno"),$("saveSueno"))});
-$("saveHab").addEventListener("click",()=>{const p={};if(sel.fumado)p.D=sel.fumado;if(sel.alcohol)p.E=sel.alcohol;if(sel.deporte)p.F=sel.deporte;
+$("saveHab").addEventListener("click",()=>{const p={};if(sel.fumado)p.D=sel.fumado;if(sel.alcohol)p.E=sel.alcohol;
   if(!Object.keys(p).length){showMsg($("mHab"),"Elige al menos una opción.");return}
-  const s=[p.D?(p.D==="No"?"sin tabaco":"tabaco"):"",p.E?(p.E==="No"?"sin alcohol":"alcohol"):"",p.F&&p.F!=="No"?p.F.toLowerCase():""].filter(Boolean).join(", ");
-  saveDiario(p,"Hábitos: "+(s||"sin deporte"),$("mHab"),$("saveHab"))});
+  const s=[p.D?(p.D==="No"?"sin tabaco":"tabaco"):"",p.E?(p.E==="No"?"sin alcohol":"alcohol"):""].filter(Boolean).join(", ");
+  saveDiario(p,"Hábitos: "+s,$("mHab"),$("saveHab"))});
 
 /* ---------- COSAS POR HACER ---------- */
 // Se guardan en la propia app (db privada de cada persona: data/users/<id>/tareas), no en la hoja.
@@ -1142,14 +1176,35 @@ $("saveEntreno").addEventListener("click",async()=>{
   try{
     const prs=new Set();if(!isRun)out.forEach(r=>{const best=bestKg(r[2],fecha);if(r[5]!=null&&best!=null&&r[5]>best)prs.add(r[2])});
     await append("Entrenos!A1",out.map(r=>r.map(v=>v==null?"":v)));
-    const dr=diaBy()[fecha];if(!dr||!dr.deporte||dr.deporte==="No"){try{await upsertDiario(fecha,{F:isRun?"Running":"Gimnasio"})}catch(e){}}
     Object.keys(EXTRA).forEach(k=>{if(k.startsWith(ses+"|"))delete EXTRA[k]});
     $("eNotas").value="";curPane=null;
-    await loadAll();closeSheet();
+    await loadAll();await syncDeporteDia(fecha);closeSheet();
     const nEj=new Set(out.map(r=>r[2])).size;
     toast("💪 "+ses+" guardado · "+(isRun?"":out.length+" series en ")+nEj+(nEj===1?" ejercicio":" ejercicios")+(prs.size?" · 🏆 récord de peso en "+[...prs].join(", "):""),5000);
   }catch(e){showMsg(m,errText(e)+" Comprueba la hoja antes de volver a guardar.")}finally{b.disabled=false;saving=false}
 });
+
+// recalcula y escribe el deporte de un día concreto (también fuera de la ventana de 7 días)
+async function syncDeporteDia(f){try{const v=computeDeporte(f);const r=diaBy()[f];if(v&&(!r||r.deporte!==v)){await upsertDiario(f,{F:v});if(r)r.deporte=v;else S.diario.push({fecha:f,sueno:null,peso:null,fumado:"",alcohol:"",deporte:v});renderAll()}}catch(e){}}
+$("skipEntreno").addEventListener("click",()=>{
+  const ses=$("eSesion").value,f=$("eFecha").value||todayIso(),m=$("mEntreno");
+  if(!ses)return;
+  if(S.entrenos.some(e=>e.fecha===f&&e.sesion===ses&&realEx(e))){showMsg(m,"Ya tienes series apuntadas de "+ses+" ese día.");return}
+  if(S.entrenos.some(e=>e.fecha===f&&e.sesion===ses&&!realEx(e))){showMsg(m,ses+" ya está marcado como saltado ese día.");return}
+  $("skipTxt").textContent="¿Marcar «"+ses+"» de "+niceDate(f)+" como no realizado?";$("skipBox").hidden=false;m.hidden=true;
+  setTimeout(()=>{try{$("skipBox").scrollIntoView({block:"nearest",behavior:"smooth"})}catch(e){}},50);
+});
+$("skipNo").addEventListener("click",()=>{$("skipBox").hidden=true});
+$("skipYes").addEventListener("click",async()=>{
+  const ses=$("eSesion").value,f=$("eFecha").value||todayIso(),m=$("mEntreno");
+  if(saving||!mcp){if(!mcp)showMsg(m,errText({code:"no_config"}));return}saving=true;
+  const b=$("skipYes");b.disabled=true;
+  try{await append("Entrenos!A1",[[f,ses,SKIP,"","","","","","Saltado"]]);
+    $("skipBox").hidden=true;curPane=null;await loadAll();await syncDeporteDia(f);closeSheet();
+    toast("⏭️ "+ses+" marcado como no realizado"+(f!==todayIso()?" ("+niceDate(f)+")":""));
+  }catch(e){showMsg(m,errText(e))}finally{b.disabled=false;saving=false}
+});
+$("eSesion").addEventListener("change",()=>{$("skipBox").hidden=true});
 
 /* ---------- COMIDA ---------- */
 function defMeal(){const h=new Date().getHours();return h<10?"Desayuno":h<12?"Almuerzo":h<16?"Comida":h<19?"Merienda":h<23?"Cena":"Snack"}
