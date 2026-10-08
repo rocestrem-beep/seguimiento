@@ -250,6 +250,25 @@ button{font:inherit;color:inherit}
 .ftot span{font-size:.8rem;font-weight:700;color:var(--muted)}
 .ftot b{font-family:var(--num);font-weight:800;font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .ftot small{font-size:.8rem;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface);border-radius:var(--r-sm);padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi span{font-size:.76rem;font-weight:700;color:var(--muted)}
+.kpi b{font-family:var(--num);font-weight:800;font-size:1.2rem;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi small{font-size:.74rem;color:var(--muted);line-height:1.25;overflow-wrap:anywhere}
+.hb{display:flex;flex-direction:column;gap:10px}
+.hb-r{display:flex;flex-direction:column;gap:4px}
+.hb-h{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
+.hb-h span:first-child{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.hb-h span:last-child{font-family:var(--num);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hb-h small{color:var(--muted);font-weight:600;margin-left:4px}
+.hb-t{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.hb-t i{display:block;height:100%;border-radius:0 4px 4px 0}
+.stack{display:flex;height:16px;border-radius:5px;overflow:hidden;gap:2px;background:var(--surface)}
+.stack i{display:block;height:100%}
+.lgd{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;margin-top:10px}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.lgd i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.lgd b{font-family:var(--num);font-variant-numeric:tabular-nums}
 .chipgrid{display:flex;flex-wrap:wrap;gap:8px}
 .amount{display:flex;align-items:baseline;justify-content:center;gap:8px;background:var(--surface);border-radius:var(--r);padding:16px 12px}
 .amount input{border:0;background:none;text-align:center;font-family:var(--num);font-weight:800;font-size:2.8rem;padding:0;width:100%;max-width:220px;min-width:0;-moz-appearance:textfield}
@@ -460,6 +479,24 @@ textarea{min-height:92px;resize:vertical}
       <div><span class="l">Ahorro</span><b id="fAho">—</b><small id="fPct"></small></div>
     </div>
     <div class="card ftot"><span>Total acumulado</span><b id="fTot">—</b><small id="fTotS"></small></div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Métricas</h2><span class="progress-line" id="kpiLine"></span></div>
+      <div class="kpis" id="kpis"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>En qué gastas</h2><span class="progress-line" id="catLine"></span></div>
+      <div class="card"><div class="stack" id="grpStack"></div><div class="lgd" id="grpLgd"></div></div>
+      <div class="card hb" id="catBars"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>De dónde entra</h2><span class="progress-line" id="ingLine"></span></div>
+      <div class="card hb" id="ingBars"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Últimos 6 meses</h2></div>
+      <div class="card chart"><div id="evoChart"></div><div class="lgd"><span><i style="background:var(--good)"></i>Entradas</span><span><i style="background:var(--bad)"></i>Salidas</span><span><i style="background:var(--ink);height:3px;border-radius:2px"></i>Ahorro</span></div></div>
+    </div>
     <div class="sec">
       <div class="sec-h"><h2>Presupuesto</h2><span class="progress-line" id="budLine"></span></div>
       <div class="list" id="budList"><div class="empty">Cargando…</div></div>
@@ -484,6 +521,7 @@ textarea{min-height:92px;resize:vertical}
       <div class="sec-h"><h2>Novedades</h2></div>
       <div class="card log" id="changelog">
         <ul>
+          <li><b>8 oct 2026 · v16</b> Métricas de dinero: gasto medio al día, previsión a fin de mes, comparación con el mes anterior, mayor salida, en qué gastas por categoría y grupo, de dónde entra tu dinero y gráfica de los últimos 6 meses.</li>
           <li><b>8 oct 2026 · v15</b> Nueva pestaña Dinero: apuntas entradas y salidas con su categoría y la app hace el total del mes y el acumulado. Presupuesto por categoría con avisos y lista de movimientos. Se guarda en tu hoja «Finanzas». Logros pasa a Más.</li>
           <li><b>8 oct 2026 · v14</b> Una sola fila por día en la hoja, siempre: si el día ya existe se modifica, nunca se crea otra; y si hubiera repetidas, se juntan solas. La app te avisa cuando vas a modificar un día ya apuntado.</li>
           <li><b>8 oct 2026 · v13</b> El deporte ya no se pregunta: la app lo deduce de tus entrenos y lo escribe sola en la hoja (Gimnasio, Running, Gimnasio + Running, Descanso, Saltado o No realizado). Nuevo botón «Entreno saltado / no realizado».</li>
@@ -1332,6 +1370,65 @@ function totMes(m){let ing=0,gas=0;const by={};movsMes(m).forEach(x=>{if(x.tipo=
 function totalAcum(){let t=0;FIN.movs.forEach(x=>{if(x.tipo==="Ingreso")t+=x.imp;else if(x.tipo==="Gasto")t-=x.imp});return t}
 function mesNombre(m){const [y,mm]=m.split("-").map(Number);const n=new Date(y,mm-1,1).toLocaleDateString("es-ES",{month:"long"});return n.charAt(0).toUpperCase()+n.slice(1)+(y!==new Date().getFullYear()?" "+y:"")}
 function addMonth(m,k){const [y,mm]=m.split("-").map(Number);const d=new Date(y,mm-1+k,1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+const GRP_COL={Fijos:"var(--weight)",Vida:"var(--sleep)",Ocio:"var(--kcal)"};
+function diasMes(m){const [y,mm]=m.split("-").map(Number);return new Date(y,mm,0).getDate()}
+function hbars(el,rows,total,color,empty){
+  if(!rows.length){el.innerHTML='<div class="empty" style="padding:0">'+empty+'</div>';return}
+  const max=Math.max(...rows.map(r=>r.v));
+  el.innerHTML=rows.map(r=>'<div class="hb-r" title="'+esc(r.k)+': '+chf(r.v)+'"><div class="hb-h"><span>'+(CAT_EMO[r.k]||"")+" "+esc(r.k)+'</span><span>'+chf0(r.v)+'<small>'+(total?Math.round(r.v/total*100)+" %":"")+'</small></span></div><div class="hb-t"><i style="width:'+(r.v/max*100).toFixed(1)+'%;background:'+(r.c||color)+'"></i></div></div>').join("");
+}
+function renderMetricas(m,t){
+  const ms=movsMes(m),gastos=ms.filter(x=>x.tipo==="Gasto"),ings=ms.filter(x=>x.tipo==="Ingreso");
+  const cur=m===todayIso().slice(0,7),dm=diasMes(m),dPas=cur?Number(todayIso().slice(8)):dm;
+  const prev=totMes(addMonth(m,-1));
+  const esFijo=c=>{const x=FIN.cats.find(y=>y.cat===c);return x&&x.grupo==="Fijos"};
+  const fijos=gastos.filter(x=>esFijo(x.cat)).reduce((a,x)=>a+x.imp,0),varia=t.gas-fijos;
+  const medio=dPas?varia/dPas:0,proy=cur?fijos+medio*dm:t.gas;
+  const top=gastos.slice().sort((a,b)=>b.imp-a.imp)[0];
+  // categoría que más ha cambiado frente al mes anterior
+  let sube=null;Object.keys(t.by).forEach(k=>{const d=t.by[k]-(prev.by[k]||0);if(d>0&&(!sube||d>sube.d))sube={k,d}});
+  const vs=prev.gas?Math.round((t.gas-prev.gas)/prev.gas*100):null;
+  const k=[
+    ["Gasto medio al día",chf(medio),"Sin contar los fijos · "+dPas+(dPas===1?" día":" días")],
+    [cur?"Previsión a fin de mes":"Gastado en total",chf0(proy),cur?"Fijos ("+chf0(fijos)+") + tu ritmo diario":"Fijos "+chf0(fijos)+" · resto "+chf0(varia)],
+    ["Frente al mes anterior",vs==null?"—":(vs>0?"+":"")+vs+" %",prev.gas?"Antes: "+chf0(prev.gas)+" de salidas":"Sin datos del mes anterior"],
+    ["Mayor salida",top?chf0(top.imp):"—",top?(CAT_EMO[top.cat]||"")+" "+(top.nota||top.cat)+" · "+niceDate(top.fecha):"Aún no hay salidas"],
+    ["Lo que más ha subido",sube?(CAT_EMO[sube.k]||"")+" "+sube.k:"—",sube?"+"+chf0(sube.d)+" frente al mes anterior":"Nada ha subido"],
+    ["Movimientos",String(ms.length),gastos.length+" salidas · "+ings.length+" entradas"]
+  ];
+  $("kpis").innerHTML=k.map(x=>'<div class="kpi"><span>'+esc(x[0])+'</span><b>'+esc(x[1])+'</b><small>'+esc(x[2])+'</small></div>').join("");
+  $("kpiLine").textContent=mesNombre(m);
+  // por grupo (barra apilada) y por categoría
+  const grp={};FIN.cats.forEach(c=>{if(c.grupo!=="Ingreso"&&t.by[c.cat])grp[c.grupo]=(grp[c.grupo]||0)+t.by[c.cat]});
+  const otros=Object.keys(t.by).filter(c=>!FIN.cats.some(x=>x.cat===c)).reduce((a,c)=>a+t.by[c],0);if(otros)grp["Otros"]=otros;
+  const gk=["Fijos","Vida","Ocio","Otros"].filter(g=>grp[g]);
+  $("grpStack").innerHTML=gk.length?gk.map(g=>'<i title="'+g+': '+chf(grp[g])+'" style="flex:'+grp[g]+';background:'+(GRP_COL[g]||"var(--muted)")+'"></i>').join(""):'<i style="flex:1;background:var(--sunk)"></i>';
+  $("grpLgd").innerHTML=gk.length?gk.map(g=>'<span><i style="background:'+(GRP_COL[g]||"var(--muted)")+'"></i>'+g+' <b>'+Math.round(grp[g]/t.gas*100)+' %</b></span>').join(""):'<span class="last">Sin salidas este mes</span>';
+  const grpOf=c=>{const x=FIN.cats.find(y=>y.cat===c);return x?x.grupo:"Otros"};
+  hbars($("catBars"),Object.keys(t.by).map(k=>({k,v:t.by[k],c:GRP_COL[grpOf(k)]||"var(--muted)"})).sort((a,b)=>b.v-a.v),t.gas,"var(--bad)","Cuando apuntes salidas, aquí verás en qué se va tu dinero.");
+  $("catLine").textContent=t.gas?chf0(t.gas):"";
+  const ib={};ings.forEach(x=>{ib[x.cat]=(ib[x.cat]||0)+x.imp});
+  hbars($("ingBars"),Object.keys(ib).map(k=>({k,v:ib[k]})).sort((a,b)=>b.v-a.v),t.ing,"var(--good)","Cuando apuntes entradas, aquí verás de dónde viene tu dinero.");
+  $("ingLine").textContent=t.ing?chf0(t.ing):"";
+  // evolución 6 meses: columnas entradas/salidas y línea de ahorro
+  const meses=[];for(let i=5;i>=0;i--)meses.push(addMonth(m,-i));
+  const dat=meses.map(x=>({m:x,...totMes(x)}));
+  const el=$("evoChart");
+  if(!dat.some(d=>d.ing||d.gas)){el.innerHTML='<div class="empty">Aquí verás tus entradas, salidas y ahorro mes a mes.</div>';return}
+  const W=520,H=190,L=46,R=8,T=14,B=26,max=Math.max(...dat.map(d=>Math.max(d.ing,d.gas)),1),minA=Math.min(0,...dat.map(d=>d.aho));
+  const top2=Math.ceil(max/500)*500||500,bot=minA<0?-Math.ceil(-minA/500)*500:0;
+  const Y=v=>T+(top2-v)/(top2-bot)*(H-T-B),gw=(W-L-R)/dat.length,bw=Math.min(18,gw*0.28);
+  let g='';[bot,0,top2/2,top2].filter((v,i,a)=>a.indexOf(v)===i).forEach(v=>{g+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'"/><text class="ax" x="'+(L-6)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+fmt(v,0)+'</text>'});
+  const pts=[];
+  dat.forEach((d,i)=>{const cx=L+gw*i+gw/2;
+    const bar=(x,v,col,lab)=>v>0?'<rect x="'+x.toFixed(1)+'" y="'+Y(v).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(Y(0)-Y(v)).toFixed(1)+'" rx="3" style="fill:'+col+'"><title>'+mesNombre(d.m)+' · '+lab+': '+chf(v)+'</title></rect>':'';
+    g+=bar(cx-bw-1,d.ing,"var(--good)","Entradas")+bar(cx+1,d.gas,"var(--bad)","Salidas");
+    if(d.ing||d.gas)pts.push([cx,Y(d.aho),d]);
+    g+='<text class="ax" x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle"'+(d.m===m?' style="font-weight:800;fill:var(--ink)"':'')+'>'+mesNombre(d.m).slice(0,3)+'</text>'});
+  g+='<path d="'+pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")+'" style="fill:none;stroke:var(--ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  pts.forEach(p=>{g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4.5" style="fill:var(--ink);stroke:var(--surface)" stroke-width="2"><title>'+mesNombre(p[2].m)+' · Ahorro: '+chf(p[2].aho)+'</title></circle>'});
+  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Entradas, salidas y ahorro de los últimos 6 meses">'+g+'</svg>';
+}
 function renderHoyFin(){
   const m=todayIso().slice(0,7);
   if(!FIN.ready){$("hDin").textContent=FIN.err?"Sin datos":"Cargando…";return}
@@ -1347,12 +1444,13 @@ function renderDinero(){
   const t=totMes(m);
   $("fIng").textContent=chf0(t.ing);$("fGas").textContent=chf0(t.gas);$("fAho").textContent=chf0(t.aho);$("fAho").className=t.aho<0?"out":"";
   $("fPct").textContent=t.ing?Math.round(t.aho/t.ing*100)+" % de lo ingresado":"";
+  renderMetricas(m,t);
   // presupuesto por grupos
   const grupos=["Fijos","Vida","Ocio"];let html="",totLim=0;
   grupos.forEach(g=>{const cs=FIN.cats.filter(c=>c.grupo===g);if(!cs.length)return;
     const gs=cs.reduce((a,c)=>a+(t.by[c.cat]||0),0),gl=cs.reduce((a,c)=>a+(c.lim||0),0);totLim+=gl;
     html+='<div class="grp"><span>'+g+'</span><span>'+chf0(gs)+(gl?" / "+chf0(gl):"")+'</span></div>';
-    cs.slice().sort((a,b)=>(t.by[b.cat]||0)-(t.by[a.cat]||0)).forEach(c=>{const sp=t.by[c.cat]||0;const p=c.lim?sp/c.lim:0;const cl=p>=1?"b":p>=.8?"w":"";
+    cs.slice().sort((a,b)=>(t.by[b.cat]||0)-(t.by[a.cat]||0)).forEach(c=>{const sp=t.by[c.cat]||0;const p=c.lim?sp/c.lim:0;const cl=p>1?"b":p>=.8?"w":"";
       html+='<button class="bud'+(c.lim&&sp>c.lim?" over":"")+'" type="button" data-cat="'+esc(c.cat)+'"><span class="bh"><span class="bn">'+(CAT_EMO[c.cat]||"•")+" "+esc(c.cat)+'</span><span class="bv">'+chf0(sp)+(c.lim?' <small>/ '+chf0(c.lim)+'</small>':' <small>· sin límite</small>')+'</span></span>'+(c.lim?'<span class="bbar"><i class="'+cl+'" style="width:'+Math.min(100,p*100).toFixed(1)+'%"></i></span>':'')+'</button>'})});
   $("budList").innerHTML=html||'<div class="empty">No encuentro categorías en la pestaña Presupuesto.</div>';
   $("budLine").textContent=totLim?chf0(t.gas)+" de "+chf0(totLim):"";
