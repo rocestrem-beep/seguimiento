@@ -211,6 +211,47 @@ button{font:inherit;color:inherit}
 .hist summary{cursor:pointer;font-weight:600}
 .hist ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
 
+/* dinero */
+.mnav{display:flex;align-items:center;gap:2px;background:var(--surface);border-radius:999px;box-shadow:var(--shadow);padding:3px}
+.mnav button{border:0;background:none;width:34px;height:34px;border-radius:50%;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--ink)}
+.mnav button:disabled{opacity:.3;cursor:default}
+.mnav span{font-size:.85rem;font-weight:700;min-width:84px;text-align:center;white-space:nowrap}
+.fsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:left}
+.fsum div{min-width:0}
+.fsum .l{font-size:.76rem;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:4px}
+.fsum .l svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.fsum b{display:block;font-family:var(--num);font-weight:800;font-size:1.25rem;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fsum small{display:block;font-size:.74rem;color:var(--muted);font-weight:600}
+.in{color:var(--good)} .out{color:var(--bad)}
+.grp{display:flex;justify-content:space-between;gap:10px;padding:12px 16px 4px;font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.bud{display:flex;flex-direction:column;gap:6px;width:100%;background:none;border:0;padding:10px 16px;text-align:left;cursor:pointer;position:relative}
+.bud+.bud::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:var(--line)}
+.bud .bh{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.bud .bn{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.bud .bv{font-family:var(--num);font-weight:700;font-size:.9rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bud .bv small{color:var(--muted);font-weight:600}
+.bud.over .bv{color:var(--bad)}
+.bbar{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.bbar i{display:block;height:100%;border-radius:3px;background:var(--good)}
+.bbar i.w{background:var(--warn)} .bbar i.b{background:var(--bad)}
+.accs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.acc{background:var(--surface);border:0;border-radius:var(--r-sm);padding:12px 14px;box-shadow:var(--shadow);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.acc span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.acc b{font-family:var(--num);font-weight:800;font-size:1.2rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.acc small{font-size:.74rem;color:var(--muted)}
+.mv{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 16px;position:relative;width:100%;background:none;border:0;text-align:left;cursor:pointer}
+.mv+.mv::before{content:"";position:absolute;top:0;left:64px;right:0;height:1px;background:var(--line)}
+.mv .em{width:36px;height:36px;border-radius:10px;background:var(--sunk);display:grid;place-items:center;font-size:1.15rem}
+.mv .mt2{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv .ms{font-size:.78rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv .ma{font-family:var(--num);font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.mv .del{border:0;background:var(--bad);color:#fff;border-radius:8px;padding:6px 10px;font-weight:700;font-size:.85rem;cursor:pointer}
+.chipgrid{display:flex;flex-wrap:wrap;gap:8px}
+.amount{display:flex;align-items:baseline;justify-content:center;gap:8px;background:var(--surface);border-radius:var(--r);padding:16px 12px}
+.amount input{border:0;background:none;text-align:center;font-family:var(--num);font-weight:800;font-size:2.8rem;padding:0;width:100%;max-width:220px;min-width:0;-moz-appearance:textfield}
+.amount input::-webkit-outer-spin-button,.amount input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.amount span{font-size:1.1rem;font-weight:700;color:var(--muted)}
+
 /* más */
 .log ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;font-size:.9rem;color:var(--muted)}
 .log b{color:var(--ink);font-weight:700;margin-right:4px}
@@ -303,6 +344,9 @@ textarea{min-height:92px;resize:vertical}
   <symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.4L7 21l5-2.6 5 2.6-1.6-7.6"/></symbol>
   <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></symbol>
   <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.3M4 5v4h4M4 13a8 8 0 0 0 14.3 4.3M20 19v-4h-4"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16.5 14.5h1.5"/><path d="M6 6l9.5-3 1.2 3"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path d="M12 4v13M6.5 11.5L12 17l5.5-5.5M5 20h14"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M12 20V7M6.5 12.5L12 7l5.5 5.5M5 4h14"/></symbol>
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M4 9h16M4 14.5h16M10 9v11.5"/></symbol>
 </svg>
 
@@ -324,6 +368,12 @@ textarea{min-height:92px;resize:vertical}
     <div class="sec">
       <div class="sec-h"><h2>Tu día</h2><span class="progress-line" id="doneLine"></span></div>
       <div class="list" id="checklist"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Dinero</h2><button class="link" type="button" data-go="dinero">Ver todo</button></div>
+      <div class="list"><button class="row" type="button" data-go="dinero"><span class="ico" style="--c:var(--weight)"><svg><use href="#i-coin"/></svg></span><span class="rt"><span class="rl" id="hDinL">Este mes</span><span class="rv" id="hDin">—</span></span><span class="st"><svg><use href="#i-chev"/></svg></span></button>
+      <button class="row" type="button" data-open="mov" data-tipo="Gasto"><span class="ico" style="--c:var(--bad)"><svg><use href="#i-out"/></svg></span><span class="rt"><span class="rv" style="font-family:var(--body);font-weight:600">Apuntar un gasto</span></span><span class="st"><svg><use href="#i-plus"/></svg></span></button></div>
     </div>
 
     <div class="sec" id="todoSec">
@@ -396,18 +446,44 @@ textarea{min-height:92px;resize:vertical}
     </div>
   </section>
 
+  <!-- DINERO -->
+  <section class="view" id="v-dinero" hidden>
+    <header class="vh"><div><p class="eyebrow">Finanzas</p><h1>Dinero</h1></div><div class="mnav"><button type="button" id="mPrev" aria-label="Mes anterior">‹</button><span id="mLbl">—</span><button type="button" id="mNext" aria-label="Mes siguiente">›</button></div></header>
+    <div class="msg" id="finMsg" hidden></div>
+    <div class="card fsum">
+      <div><span class="l in"><svg><use href="#i-in"/></svg>Ingresos</span><b id="fIng">—</b></div>
+      <div><span class="l out"><svg><use href="#i-out"/></svg>Gastos</span><b id="fGas">—</b></div>
+      <div><span class="l">Ahorro</span><b id="fAho">—</b><small id="fPct"></small></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Presupuesto</h2><span class="progress-line" id="budLine"></span></div>
+      <div class="list" id="budList"><div class="empty">Cargando…</div></div>
+      <p class="todo-note">Toca una categoría para poner o cambiar su límite mensual.</p>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Cuentas</h2><span class="progress-line">toca para poner el saldo</span></div>
+      <div class="accs" id="accList"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Movimientos</h2><span class="progress-line" id="movCount"></span></div>
+      <div class="list" id="movList"></div>
+    </div>
+  </section>
+
   <!-- MÁS -->
   <section class="view" id="v-mas" hidden>
     <header class="vh"><div><p class="eyebrow">Ajustes</p><h1>Más</h1></div></header>
     <div class="list">
       <button class="row" type="button" id="reload"><span class="ico" style="--c:var(--good)"><svg><use href="#i-sync"/></svg></span><span class="rt"><span class="rv" style="font-family:var(--body);font-weight:600">Actualizar datos</span><span class="rl" id="status2">—</span></span><span class="st"><svg><use href="#i-chev"/></svg></span></button>
       <button class="row" type="button" data-open="conexion"><span class="ico" style="--c:var(--weight)"><svg><use href="#i-sync"/></svg></span><span class="rt"><span class="rv" style="font-family:var(--body);font-weight:600">Conexión con tu hoja</span><span class="rl" id="cfgState">—</span></span><span class="st"><svg><use href="#i-chev"/></svg></span></button>
+      <button class="row" type="button" data-go="logros"><span class="ico" style="--c:var(--kcal)"><svg><use href="#i-medal"/></svg></span><span class="rt"><span class="rv" style="font-family:var(--body);font-weight:600">Logros</span><span class="rl">Rachas e insignias</span></span><span class="st"><svg><use href="#i-chev"/></svg></span></button>
       <a class="row" id="sheetLink" target="_blank" rel="noopener"><span class="ico" style="--c:var(--gym)"><svg><use href="#i-sheet"/></svg></span><span class="rt"><span class="rv" style="font-family:var(--body);font-weight:600">Abrir mi hoja de Google</span><span class="rl">Seguimiento diario</span></span><span class="st"><svg><use href="#i-chev"/></svg></span></a>
     </div>
     <div class="sec">
       <div class="sec-h"><h2>Novedades</h2></div>
       <div class="card log" id="changelog">
         <ul>
+          <li><b>8 oct 2026 · v15</b> Nueva pestaña Dinero: ingresos, gastos y ahorro del mes, presupuesto por categoría con avisos, saldo de UBS, ZKB, ZKB conjunta y efectivo, y lista de movimientos. Apunta gastos, ingresos y transferencias desde el «+» o desde Hoy. Se guarda en tu hoja «Finanzas». Logros pasa a Más.</li>
           <li><b>8 oct 2026 · v14</b> Una sola fila por día en la hoja, siempre: si el día ya existe se modifica, nunca se crea otra; y si hubiera repetidas, se juntan solas. La app te avisa cuando vas a modificar un día ya apuntado.</li>
           <li><b>8 oct 2026 · v13</b> El deporte ya no se pregunta: la app lo deduce de tus entrenos y lo escribe sola en la hoja (Gimnasio, Running, Gimnasio + Running, Descanso, Saltado o No realizado). Nuevo botón «Entreno saltado / no realizado».</li>
           <li><b>8 oct 2026 · v12</b> La dieta también se guarda en tu hoja, en la pestaña «Dieta»: una fila por día con cada comida (Bien / No) y las kcal y proteína del menú. Si no hay conexión, se sube sola después.</li>
@@ -432,7 +508,7 @@ textarea{min-height:92px;resize:vertical}
   <button class="tab" role="tab" data-v="hoy" aria-selected="true" type="button"><svg><use href="#i-today"/></svg>Hoy</button>
   <button class="tab" role="tab" data-v="progreso" aria-selected="false" type="button"><svg><use href="#i-chart"/></svg>Progreso</button>
   <div class="fab-w"><button class="fab" id="fab" type="button" aria-label="Apuntar algo"><svg><use href="#i-plus"/></svg></button></div>
-  <button class="tab" role="tab" data-v="logros" aria-selected="false" type="button"><svg><use href="#i-medal"/></svg>Logros</button>
+  <button class="tab" role="tab" data-v="dinero" aria-selected="false" type="button"><svg><use href="#i-coin"/></svg>Dinero</button>
   <button class="tab" role="tab" data-v="mas" aria-selected="false" type="button"><svg><use href="#i-more"/></svg>Más</button>
 </div></nav>
 
@@ -451,6 +527,8 @@ textarea{min-height:92px;resize:vertical}
         <button class="act" type="button" data-open="peso"><span class="ico" style="--c:var(--weight)"><svg><use href="#i-scale"/></svg></span>Peso</button>
         <button class="act" type="button" data-open="sueno"><span class="ico" style="--c:var(--sleep)"><svg><use href="#i-moon"/></svg></span>Sueño</button>
         <button class="act" type="button" data-open="habitos"><span class="ico" style="--c:var(--habit)"><svg><use href="#i-leaf"/></svg></span>Hábitos</button>
+        <button class="act" type="button" data-open="mov" data-tipo="Gasto"><span class="ico" style="--c:var(--bad)"><svg><use href="#i-out"/></svg></span>Gasto</button>
+        <button class="act" type="button" data-open="mov" data-tipo="Ingreso"><span class="ico" style="--c:var(--good)"><svg><use href="#i-in"/></svg></span>Ingreso</button>
         <button class="act" type="button" id="actTodo"><span class="ico" style="--c:var(--mood)"><svg><use href="#i-check"/></svg></span>Tarea</button>
       </div>
     </div>
@@ -499,6 +577,32 @@ textarea{min-height:92px;resize:vertical}
       </div>
 </details>
       <div class="msg" id="mComida" hidden></div>
+    </div>
+
+    <div class="pane" data-pane="mov" hidden>
+      <div class="seg" id="movTipo"><button type="button" data-v="Gasto">Gasto</button><button type="button" data-v="Ingreso">Ingreso</button><button type="button" data-v="Transferencia">Transferencia</button></div>
+      <div class="amount"><input id="movImp" type="number" inputmode="decimal" step="0.05" min="0" placeholder="0" aria-label="Importe en francos"><span>CHF</span></div>
+      <div class="fld" id="movCatF"><span class="fl">Categoría</span><div class="chipgrid" id="movCats"></div></div>
+      <div class="fld"><span class="fl" id="movCtaL">Cuenta</span><div class="chipgrid" id="movCtas"></div></div>
+      <div class="fld" id="movDstF" hidden><span class="fl">A la cuenta</span><div class="chipgrid" id="movDsts"></div></div>
+      <div class="fld"><label for="movNota">Nota (opcional)</label><input id="movNota" type="text" maxlength="200" placeholder="Ej. Migros, cena con Andrea…"></div>
+      <button class="btn" id="saveMov" type="button">Guardar</button>
+      <div class="msg" id="mMov" hidden></div>
+    </div>
+
+    <div class="pane" data-pane="limite" hidden>
+      <p class="hint" id="limTxt" style="text-align:left;margin:0"></p>
+      <div class="amount"><input id="limIn" type="number" inputmode="decimal" step="10" min="0" placeholder="Sin límite" aria-label="Límite mensual en francos"><span>CHF/mes</span></div>
+      <button class="btn" id="saveLim" type="button">Guardar límite</button>
+      <button class="lnk" id="clearLim" type="button">Quitar el límite</button>
+      <div class="msg" id="mLim" hidden></div>
+    </div>
+
+    <div class="pane" data-pane="saldo" hidden>
+      <p class="hint" id="salTxt" style="text-align:left;margin:0"></p>
+      <div class="amount"><input id="salIn" type="number" inputmode="decimal" step="0.05" aria-label="Saldo en francos"><span>CHF</span></div>
+      <button class="btn" id="saveSal" type="button">Guardar saldo</button>
+      <div class="msg" id="mSal" hidden></div>
     </div>
 
     <div class="pane" data-pane="conexion" hidden>
@@ -613,6 +717,7 @@ async function loadAll(){
     S.loaded=true;
     if(d.dieta)sincronizarDieta(d.dieta);
     setTimeout(syncDeporte,0);
+    loadFin();
     setStatus("Al día · "+new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"}),"ok");
     $("banner").hidden=true;
     renderAll();
@@ -872,11 +977,11 @@ function streakNote(patch){
 }
 
 function renderAll(){
-  [renderHoy,renderProgreso,renderLogros,()=>{if(curPane!=="entreno")buildSessions()},()=>{if(curPane==="comida")renderDieta()}].forEach(f=>{try{f()}catch(e){console.error(e)}});
+  [renderDinero,renderHoyFin,renderHoy,renderProgreso,renderLogros,()=>{if(curPane!=="entreno")buildSessions()},()=>{if(curPane==="comida")renderDieta()}].forEach(f=>{try{f()}catch(e){console.error(e)}});
 }
 
 /* ---------- navegación ---------- */
-const VIEWS=["hoy","progreso","logros","mas"];
+const VIEWS=["hoy","progreso","logros","dinero","mas"];
 function go(v){
   if(!VIEWS.includes(v))v="hoy";
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===v?"true":"false"));
@@ -890,8 +995,8 @@ document.addEventListener("click",e=>{
 });
 
 /* ---------- hoja deslizante ---------- */
-const TITLES={conexion:"Conexión con tu hoja",menu:"Apuntar",peso:"Peso",sueno:"Sueño",habitos:"Hábitos",comida:"Dieta",entreno:"Entreno"};
-const DIARIO_PANES=["peso","sueno","habitos","comida"];
+const TITLES={mov:"Movimiento",limite:"Límite mensual",saldo:"Saldo de la cuenta",conexion:"Conexión con tu hoja",menu:"Apuntar",peso:"Peso",sueno:"Sueño",habitos:"Hábitos",comida:"Dieta",entreno:"Entreno"};
+const DIARIO_PANES=["peso","sueno","habitos","comida","mov"];
 let curPane=null,lastFocus=null;
 function openSheet(p,fromMenu){
   if(!$("sheet").hidden&&!fromMenu&&curPane===p)return;
@@ -938,6 +1043,9 @@ $("suenoIn").addEventListener("input",syncQuick);
 
 function prefill(p){
   const f=sheetDate();const r=diaBy()[f]||{};
+  if(p==="mov")prefillMov();
+  if(p==="limite")prefillLim();
+  if(p==="saldo")prefillSal();
   if(p==="conexion"){$("cfgUrl").value=CFG.url||"";$("cfgKey").value=CFG.key||""}
   if(p==="peso"){
     const prev=S.diario.filter(d=>d.peso!=null&&d.fecha!==f&&d.fecha<=f).pop();
@@ -1209,6 +1317,141 @@ $("skipYes").addEventListener("click",async()=>{
   }catch(e){showMsg(m,errText(e))}finally{b.disabled=false;saving=false}
 });
 $("eSesion").addEventListener("change",()=>{$("skipBox").hidden=true});
+
+/* ---------- DINERO ---------- */
+// Hoja «Finanzas»: Movimientos (ID, Fecha, Tipo, Importe, Categoría, Cuenta, Destino, Nota), Presupuesto, Cuentas.
+const CTAS=["UBS","ZKB","ZKB conjunta","Efectivo"];
+const ING_DEF=["Nómina Corti","Noches con Marco","Otros ingresos"];
+const CAT_EMO={"Alquiler":"🏠","Seguro médico":"🩺","Transporte":"🚆","Móvil e internet":"📱","Suscripciones":"🔁","Impuestos":"🧾","Otros fijos":"📌","Supermercado":"🛒","Gimnasio y deporte":"🏋️","Farmacia y salud":"💊","Ropa":"👕","Hogar":"🛋️","Cuidado personal":"💈","Comer fuera":"🍽️","Comida a domicilio":"🛵","Salir y fiesta":"🍻","Viajes":"✈️","Regalos":"🎁","Caprichos y otros":"✨","Nómina Corti":"🏗️","Noches con Marco":"🍸","Otros ingresos":"💶"};
+const FIN={movs:[],cats:[],ctas:[],ready:false,err:"",month:todayIso().slice(0,7),edit:null,delId:null};
+const MV={tipo:"Gasto",cat:"",cta:"",dst:""};
+const chf=(n,d)=>(n==null||isNaN(n)?"—":n.toLocaleString("es-ES",{useGrouping:"always",minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d}))+" CHF";
+const chf0=n=>chf(n,0);
+const movTime=id=>{const t=parseInt(String(id).slice(1,9),36);return isFinite(t)?t:0};
+async function loadFin(){
+  if(!mcp)return;
+  try{const d=await api("loadFin");
+    FIN.movs=(d.movimientos||[]).map(r=>({id:r[0],fecha:normDate(r[1]),tipo:r[2]||"",imp:num(r[3])||0,cat:r[4]||"",cta:r[5]||"",dst:r[6]||"",nota:r[7]||""})).filter(x=>x.id&&isIso(x.fecha));
+    FIN.cats=(d.presupuesto||[]).filter(r=>r[0]&&r[1]).map(r=>({cat:r[0],grupo:r[1],lim:num(r[2])}));
+    FIN.ctas=CTAS.map(c=>{const r=(d.cuentas||[]).find(x=>x[0]===c)||[];const raw=String(r[2]||"");return {cta:c,ini:num(r[1]),fecha:normDate(raw.slice(0,10)),hora:raw.slice(11,19)}});
+    FIN.ready=true;FIN.err="";
+  }catch(e){FIN.err=e&&e.message==="Acción desconocida"?"Para ver tu dinero, actualiza el script de Google con el Codigo.gs nuevo (Implementar → Gestionar implementaciones → Nueva versión).":errText(e)}
+  renderDinero();renderHoyFin();
+}
+function movsMes(m){return FIN.movs.filter(x=>x.fecha.slice(0,7)===m)}
+function totMes(m){let ing=0,gas=0;const by={};movsMes(m).forEach(x=>{if(x.tipo==="Ingreso")ing+=x.imp;else if(x.tipo==="Gasto"){gas+=x.imp;by[x.cat]=(by[x.cat]||0)+x.imp}});return {ing,gas,aho:ing-gas,by}}
+function saldoDe(c){
+  let s=c.ini||0;const tSal=c.fecha?new Date(c.fecha+"T"+(c.hora||"00:00")).getTime():0;
+  FIN.movs.forEach(x=>{
+    if(c.fecha&&(x.fecha<c.fecha||(x.fecha===c.fecha&&movTime(x.id)<=tSal)))return; // ya incluido en el saldo que pusiste
+    if(x.tipo==="Ingreso"&&x.cta===c.cta)s+=x.imp;
+    if(x.tipo==="Gasto"&&x.cta===c.cta)s-=x.imp;
+    if(x.tipo==="Transferencia"){if(x.cta===c.cta)s-=x.imp;if(x.dst===c.cta)s+=x.imp}});
+  return s;
+}
+function mesNombre(m){const [y,mm]=m.split("-").map(Number);const n=new Date(y,mm-1,1).toLocaleDateString("es-ES",{month:"long"});return n.charAt(0).toUpperCase()+n.slice(1)+(y!==new Date().getFullYear()?" "+y:"")}
+function addMonth(m,k){const [y,mm]=m.split("-").map(Number);const d=new Date(y,mm-1+k,1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+function renderHoyFin(){
+  const m=todayIso().slice(0,7);
+  if(!FIN.ready){$("hDin").textContent=FIN.err?"Sin datos":"Cargando…";return}
+  const t=totMes(m);const lim=FIN.cats.filter(c=>c.grupo!=="Ingreso"&&c.lim).reduce((a,c)=>a+c.lim,0);
+  const over=FIN.cats.filter(c=>c.grupo!=="Ingreso"&&c.lim&&(t.by[c.cat]||0)>c.lim).length;
+  $("hDinL").textContent=mesNombre(m)+(over?" · ⚠️ "+over+(over===1?" categoría pasada":" categorías pasadas"):"");
+  $("hDin").textContent="Gastado "+chf0(t.gas)+(lim?" de "+chf0(lim):"")+" · ahorro "+chf0(t.aho);
+}
+function renderDinero(){
+  const m=FIN.month;$("mLbl").textContent=mesNombre(m);$("mNext").disabled=m>=todayIso().slice(0,7);
+  showMsg($("finMsg"),FIN.err,"");if(FIN.err)$("finMsg").className="msg";
+  if(!FIN.ready){$("budList").innerHTML='<div class="empty">'+(FIN.err?"Sin datos.":"Cargando tu dinero…")+'</div>';return}
+  const t=totMes(m);
+  $("fIng").textContent=chf0(t.ing);$("fGas").textContent=chf0(t.gas);$("fAho").textContent=chf0(t.aho);$("fAho").className=t.aho<0?"out":"";
+  $("fPct").textContent=t.ing?Math.round(t.aho/t.ing*100)+" % de lo ingresado":"";
+  // presupuesto por grupos
+  const grupos=["Fijos","Vida","Ocio"];let html="",totLim=0;
+  grupos.forEach(g=>{const cs=FIN.cats.filter(c=>c.grupo===g);if(!cs.length)return;
+    const gs=cs.reduce((a,c)=>a+(t.by[c.cat]||0),0),gl=cs.reduce((a,c)=>a+(c.lim||0),0);totLim+=gl;
+    html+='<div class="grp"><span>'+g+'</span><span>'+chf0(gs)+(gl?" / "+chf0(gl):"")+'</span></div>';
+    cs.slice().sort((a,b)=>(t.by[b.cat]||0)-(t.by[a.cat]||0)).forEach(c=>{const sp=t.by[c.cat]||0;const p=c.lim?sp/c.lim:0;const cl=p>=1?"b":p>=.8?"w":"";
+      html+='<button class="bud'+(c.lim&&sp>c.lim?" over":"")+'" type="button" data-cat="'+esc(c.cat)+'"><span class="bh"><span class="bn">'+(CAT_EMO[c.cat]||"•")+" "+esc(c.cat)+'</span><span class="bv">'+chf0(sp)+(c.lim?' <small>/ '+chf0(c.lim)+'</small>':' <small>· sin límite</small>')+'</span></span>'+(c.lim?'<span class="bbar"><i class="'+cl+'" style="width:'+Math.min(100,p*100).toFixed(1)+'%"></i></span>':'')+'</button>'})});
+  $("budList").innerHTML=html||'<div class="empty">No encuentro categorías en la pestaña Presupuesto.</div>';
+  $("budLine").textContent=totLim?chf0(t.gas)+" de "+chf0(totLim):"";
+  // cuentas
+  $("accList").innerHTML=FIN.ctas.map(c=>'<button class="acc" type="button" data-cta="'+esc(c.cta)+'"><span>'+esc(c.cta)+'</span><b>'+(c.ini==null?"—":chf(saldoDe(c)))+'</b><small>'+(c.ini==null?"Toca para poner el saldo":"Saldo puesto el "+niceDate(c.fecha))+'</small></button>').join("");
+  // movimientos del mes
+  const ms=movsMes(m).slice().sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:movTime(b.id)-movTime(a.id));
+  $("movCount").textContent=ms.length?ms.length+(ms.length===1?" movimiento":" movimientos"):"";
+  $("movList").innerHTML=(ms.length?ms.map(x=>{const tr=x.tipo==="Transferencia";const sign=x.tipo==="Ingreso"?"+":tr?"":"−";
+    const tit=x.nota||(tr?"Transferencia":x.cat);const sub=[tr?x.cta+" → "+x.dst:(x.nota?x.cat+" · ":"")+x.cta,niceDate(x.fecha)].join(" · ");
+    return '<div class="mv" data-id="'+esc(x.id)+'"><span class="em">'+(tr?"🔄":CAT_EMO[x.cat]||"•")+'</span><span style="min-width:0"><div class="mt2">'+esc(tit)+'</div><div class="ms">'+esc(sub)+'</div></span>'+
+      (FIN.delId===x.id?'<button class="del" type="button" data-del="'+esc(x.id)+'">Borrar</button>':'<span class="ma '+(x.tipo==="Ingreso"?"in":tr?"":"out")+'">'+sign+chf(x.imp)+'</span>')+'</div>'}).join(""):'<div class="empty">Sin movimientos en '+mesNombre(m).toLowerCase()+'.</div>')+
+    '<button class="add" type="button" data-open="mov" data-tipo="Gasto"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Añadir movimiento</button>';
+}
+$("mPrev").addEventListener("click",()=>{FIN.month=addMonth(FIN.month,-1);FIN.delId=null;renderDinero()});
+$("mNext").addEventListener("click",()=>{FIN.month=addMonth(FIN.month,1);FIN.delId=null;renderDinero()});
+$("budList").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;FIN.edit=b.dataset.cat;openSheet("limite")});
+$("accList").addEventListener("click",e=>{const b=e.target.closest("[data-cta]");if(!b)return;FIN.edit=b.dataset.cta;openSheet("saldo")});
+$("movList").addEventListener("click",async e=>{
+  const del=e.target.closest("[data-del]");
+  if(del){const id=del.dataset.del;del.disabled=true;del.textContent="…";
+    try{await api("delMov",{id});FIN.movs=FIN.movs.filter(x=>x.id!==id);FIN.delId=null;renderDinero();renderHoyFin();toast("🗑️ Movimiento borrado")}
+    catch(err){showMsg($("finMsg"),errText(err));renderDinero()}return}
+  const row=e.target.closest(".mv");if(!row)return;
+  FIN.delId=FIN.delId===row.dataset.id?null:row.dataset.id;renderDinero();
+  if(FIN.delId)setTimeout(()=>{if(FIN.delId===row.dataset.id){FIN.delId=null;renderDinero()}},4000);
+});
+document.addEventListener("click",e=>{const t=e.target.closest("[data-tipo]");if(t)MV.tipo=t.dataset.tipo},true);
+function chipsHTML(list,selv){return list.map(v=>'<button class="chip" type="button" data-v="'+esc(v)+'" aria-pressed="'+(v===selv)+'">'+(CAT_EMO[v]?CAT_EMO[v]+" ":"")+esc(v)+'</button>').join("")}
+function renderMovPane(){
+  $("movTipo").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===MV.tipo)));
+  const tr=MV.tipo==="Transferencia";
+  const cats=MV.tipo==="Ingreso"?(FIN.cats.filter(c=>c.grupo==="Ingreso").map(c=>c.cat).concat(ING_DEF)).filter((v,i,a)=>a.indexOf(v)===i):FIN.cats.filter(c=>c.grupo!=="Ingreso").map(c=>c.cat);
+  if(!cats.includes(MV.cat))MV.cat="";
+  $("movCatF").hidden=tr;$("movCats").innerHTML=chipsHTML(cats,MV.cat)||'<span class="last">Cargando categorías…</span>';
+  $("movCtaL").textContent=tr?"Desde la cuenta":MV.tipo==="Ingreso"?"Entra en la cuenta":"Pagado con";
+  $("movCtas").innerHTML=chipsHTML(CTAS,MV.cta);
+  $("movDstF").hidden=!tr;$("movDsts").innerHTML=chipsHTML(CTAS.filter(c=>c!==MV.cta),MV.dst);
+  $("saveMov").textContent="Guardar "+MV.tipo.toLowerCase();
+}
+function prefillMov(){let last="UBS";try{last=localStorage.getItem("ultimaCuenta")||"UBS"}catch(e){}
+  if(!MV.cta)MV.cta=last;MV.cat="";MV.dst="";$("movImp").value="";$("movNota").value="";renderMovPane();setTimeout(()=>{try{$("movImp").focus()}catch(e){}},250)}
+$("movTipo").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;MV.tipo=b.dataset.v;renderMovPane()});
+$("movCats").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;MV.cat=b.dataset.v;renderMovPane()});
+$("movCtas").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;MV.cta=b.dataset.v;if(MV.dst===MV.cta)MV.dst="";renderMovPane()});
+$("movDsts").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;MV.dst=b.dataset.v;renderMovPane()});
+let savingMov=false;
+$("saveMov").addEventListener("click",async()=>{
+  const m=$("mMov");const imp=num($("movImp").value);const tr=MV.tipo==="Transferencia";
+  if(!(imp>0)){showMsg(m,"Escribe el importe.");return}
+  if(!tr&&!MV.cat){showMsg(m,"Elige una categoría.");return}
+  if(!MV.cta){showMsg(m,"Elige la cuenta.");return}
+  if(tr&&!MV.dst){showMsg(m,"Elige a qué cuenta va la transferencia.");return}
+  if(savingMov)return;if(!mcp){showMsg(m,errText({code:"no_config"}));return}
+  savingMov=true;const b=$("saveMov");b.disabled=true;
+  const mov={id:"m"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),fecha:sheetDate(),tipo:MV.tipo,importe:Math.round(imp*100)/100,categoria:tr?"Transferencia":MV.cat,cuenta:MV.cta,destino:tr?MV.dst:"",nota:$("movNota").value.trim()};
+  try{await api("addMov",{mov});
+    FIN.movs.push({id:mov.id,fecha:mov.fecha,tipo:mov.tipo,imp:mov.importe,cat:mov.categoria,cta:mov.cuenta,dst:mov.destino,nota:mov.nota});
+    try{localStorage.setItem("ultimaCuenta",MV.cta)}catch(e){}
+    let extra="";
+    if(mov.tipo==="Gasto"){const c=FIN.cats.find(x=>x.cat===mov.categoria);const sp=totMes(mov.fecha.slice(0,7)).by[mov.categoria]||0;
+      if(c&&c.lim){const left=c.lim-sp;extra=left>=0?" · te quedan "+chf0(left)+" en "+c.cat.toLowerCase():" · ⚠️ te has pasado "+chf0(-left)+" en "+c.cat.toLowerCase()}}
+    closeSheet();renderDinero();renderHoyFin();
+    toast((mov.tipo==="Ingreso"?"💰 +":mov.tipo==="Gasto"?"💸 −":"🔄 ")+chf(mov.importe)+" · "+(tr?mov.cuenta+" → "+mov.destino:mov.categoria)+extra,5000);
+  }catch(e){showMsg(m,errText(e))}finally{b.disabled=false;savingMov=false}
+});
+function prefillLim(){const c=FIN.cats.find(x=>x.cat===FIN.edit);if(!c)return;
+  $("limTxt").textContent=(CAT_EMO[c.cat]||"")+" "+c.cat+": ¿cuánto quieres gastar como máximo al mes?";$("limIn").value=c.lim!=null?c.lim:"";$("clearLim").hidden=c.lim==null}
+async function guardarLim(v){const m=$("mLim");if(!mcp){showMsg(m,errText({code:"no_config"}));return}
+  try{await api("setLimite",{categoria:FIN.edit,limite:v});const c=FIN.cats.find(x=>x.cat===FIN.edit);if(c)c.lim=v===""?null:v;closeSheet();renderDinero();renderHoyFin();toast(v===""?"Límite quitado":"✅ Límite de "+FIN.edit.toLowerCase()+": "+chf0(v)+" al mes")}
+  catch(e){showMsg(m,errText(e))}}
+$("saveLim").addEventListener("click",()=>{const v=num($("limIn").value);if(v==null||v<0){showMsg($("mLim"),"Escribe un límite (o quítalo).");return}guardarLim(Math.round(v*100)/100)});
+$("clearLim").addEventListener("click",()=>guardarLim(""));
+function prefillSal(){const c=FIN.ctas.find(x=>x.cta===FIN.edit);if(!c)return;
+  $("salTxt").textContent="¿Cuánto tienes ahora mismo en "+c.cta+"? Míralo en tu app del banco. A partir de ahora, la app suma y resta lo que apuntes.";$("salIn").value=c.ini!=null?Math.round(saldoDe(c)*100)/100:""}
+$("saveSal").addEventListener("click",async()=>{const m=$("mSal");const v=num($("salIn").value);if(v==null){showMsg(m,"Escribe el saldo.");return}
+  if(!mcp){showMsg(m,errText({code:"no_config"}));return}
+  const now=new Date();const fecha=todayIso()+" "+[now.getHours(),now.getMinutes(),now.getSeconds()].map(x=>String(x).padStart(2,"0")).join(":");
+  try{await api("setSaldo",{cuenta:FIN.edit,saldo:v,fecha});const c=FIN.ctas.find(x=>x.cta===FIN.edit);if(c){c.ini=v;c.fecha=todayIso();c.hora=fecha.slice(11,19)}closeSheet();renderDinero();toast("✅ Saldo de "+FIN.edit+": "+chf(v))}
+  catch(e){showMsg(m,errText(e))}});
 
 /* ---------- COMIDA ---------- */
 function defMeal(){const h=new Date().getHours();return h<10?"Desayuno":h<12?"Almuerzo":h<16?"Comida":h<19?"Merienda":h<23?"Cena":"Snack"}
